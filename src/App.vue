@@ -5,31 +5,25 @@
             <router-link to="/about" class="link">About</router-link>
         </div>
         <router-view/>
-        <div class="status-bar">
-            100%
-        </div>
     </div>
 </template>
-
 <style scoped lang="css">
 #app {
-    @apply grid inset-0 relative h-screen;
-    grid-template-rows: auto 1fr auto;
+    @apply relative min-h-screen;
 }
 
 .toolbar {
-    @apply border-b border-gray-300 text-sm flex gap-2;
+    @apply border-b border-gray-300 text-sm flex sticky top-0 bg-white px-2;
+    z-index: 1;
 }
 
 .link {
-    @apply p-2 underline decoration-sky-500;
+    @apply py-2 px-4 font-bold text-gray-700;
 }
 
 .link:hover {
-    @apply text-blue-800;
-}
-
-.status-bar {
-    @apply border-t border-gray-300 p-2 text-sm;
+    @apply text-blue-800 underline;
+    text-decoration-color: theme('colors.blue.300');
+    text-decoration-thickness: 2px;
 }
 </style>
