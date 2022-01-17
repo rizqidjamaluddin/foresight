@@ -2,8 +2,21 @@ import {timeToSec} from "@/util/timeToSec"
 
 export enum Event {
     GENERIC,
+    ENRAGE,
     TANK_BUSTER,
     RAID_WIDE,
+    SAFE_SPOT,
+    SAFE_SIDE,
+    SAFE_SLICE,
+    GET_OUT,
+    GET_IN,
+    KNOCKBACK,
+    PUDDLES,
+    BAIT,
+    FLARE,
+    STACK,
+    FLARE_OR_STACK,
+    POSITIONS,
 }
 
 export enum DamageType {
@@ -15,6 +28,7 @@ export type Encounter = {
     lookup: Record<string, {
         type: Event
         damageType?: DamageType
+        special?: true
     }>
 }
 
@@ -73,11 +87,38 @@ export const p1s: Encounter = {
     "lookup": {
         "Heavy Hand": {
             type: Event.TANK_BUSTER,
-            damageType: DamageType.PHYSICAL,
+            special: true,
         },
         "Warden's Wrath": {
             type: Event.RAID_WIDE,
-            damageType: DamageType.PHYSICAL
+        },
+        "Gaoler's Flail": {
+            type: Event.SAFE_SPOT
+        },
+        "Pitiless Flail of Grace/Purgation": {
+            type: Event.FLARE_OR_STACK,
+            special: true,
+        },
+        "Aetherchain": {
+            type: Event.SAFE_SPOT
+        },
+        "Aetherial Shackles": {
+            type: Event.POSITIONS
+        },
+        "Shining Cells": {
+            type: Event.RAID_WIDE
+        },
+        "Aetherflail": {
+            type: Event.SAFE_SLICE
+        },
+        "Slam Shut": {
+            type: Event.RAID_WIDE
+        },
+        "Fourfold Shackles": {
+            type: Event.POSITIONS
+        },
+        "Lethe": {
+            type: Event.ENRAGE
         }
     }
 }

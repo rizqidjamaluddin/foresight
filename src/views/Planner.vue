@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Timeline :encounter="activeEncounter" :multiplier="multiplier">
+        <Timeline :encounter="activeEncounter" :multiplier="multiplier" :generic="plan.config.generic">
             <ability-lane
                 v-for="(lane, i) in plan.lanes"
                 :key="lane.id"
@@ -22,6 +22,11 @@
                 <span @dblclick="resetZoom">{{ Math.ceil(multiplier * (100 / defaultZoom))}}%</span>
                 <button class="zoom-button" @click="zoomIn">&plus;</button>
                 <button class="zoom-button" @click="zoomOut">&minus;</button>
+            </div>
+            <div class="toggle-bar">
+                <label>
+                    <input type="checkbox" v-model="plan.config.generic"> Use generic names
+                </label>
             </div>
         </div>
     </div>
@@ -45,6 +50,9 @@
     ]
 
     type Plan = {
+        config: {
+          generic: boolean
+        },
         inc: {
             lane: number,
             marker: number,
@@ -61,7 +69,7 @@
         }>,
     }
 
-    const zoomLevels = [1, 2, 3, 5, 8, 10, 20, 40]
+    const zoomLevels = [1, 1.5, 2, 2.5, 3, 5, 8, 10, 20, 40]
 
     @Component({
         components: {AbilityMarker, AbilityLane, Timeline}
@@ -71,6 +79,9 @@
         @Prop() state!: string
 
         plan: Plan = {
+            config: {
+                generic: false
+            },
             inc: {
                 lane: 0,
                 marker: 0,
@@ -154,7 +165,7 @@
 </script>
 <style scoped lang="css">
 .status-bar {
-    @apply p-2 text-sm fixed top-0 right-0 flex items-center gap-2 font-bold flex-row-reverse left-1/2;
+    @apply p-2 text-sm fixed top-0 right-0 flex items-center gap-6 font-bold flex-row-reverse left-1/2;
     z-index: 1;
 }
 
@@ -167,5 +178,13 @@
     width: 1.2rem;
     height: 1.2rem;
     line-height: 1.2rem;
+}
+
+.toggle-bar {
+    @apply font-normal;
+}
+
+.toggle-bar input {
+    @apply relative top-0.5;
 }
 </style>
