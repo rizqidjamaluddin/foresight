@@ -7,6 +7,7 @@
                     :key="i"
                     :offset="event.timestamp * multiplier"
                     :type="getType(event.event)"
+                    :magical="getMagical(event.event)"
                     :generic="generic"
                 >
                     {{ event.event }}
@@ -20,6 +21,7 @@
                     :special="isSpecial(event.event)"
                     :offset="event.timestamp * multiplier"
                     :type="getType(event.event)"
+                    :magical="getMagical(event.event)"
                     :generic="generic"
                 >
                     {{ event.event }}
@@ -63,6 +65,14 @@
                 return this.encounter.lookup[eventName].type
             } else {
                 return ''
+            }
+        }
+
+        getMagical(eventName: string): boolean {
+            if (Object.keys(this.encounter.lookup).includes(eventName)) {
+                return this.encounter.lookup[eventName].magical ?? false
+            } else {
+                return false
             }
         }
 

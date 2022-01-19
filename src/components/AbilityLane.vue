@@ -4,7 +4,7 @@
             <img :src="icon" />
         </div>
         <div class="lane-contents">
-            <div class="lane-bg" @dblclick.prevent="addNewElement"></div>
+            <div class="lane-bg" @click.prevent="addNewElement"></div>
             <slot />
         </div>
     </div>

@@ -19,6 +19,7 @@
     export default class AbilityMarker extends Vue {
         @Prop() time!: number
         @Prop() multiplier!: number
+        @Prop() lock!: boolean
 
         @Prop() ability!: Ability
 
@@ -30,6 +31,8 @@
 
 
         handleDown(event: MouseEvent) {
+            if (this.lock) return
+
             this.dragging = true
             this.dragStart = event.pageY
             this.dragHorizontalStart = event.pageX

@@ -5,6 +5,12 @@
           <li>
               <router-link :to="{name: 'encounters', params: {encounter: 'p1s'}}" class="link">P1S (Eric)</router-link>
           </li>
+          <li>
+              <router-link :to="{name: 'encounters', params: {encounter: 'p2s'}}" class="link">P2S (Hippo)</router-link>
+          </li>
+          <li>
+              <router-link :to="{name: 'encounters', params: {encounter: 'p3s'}}" class="link">P3S (Phoi)</router-link>
+          </li>
       </ul>
   </div>
 </template>
