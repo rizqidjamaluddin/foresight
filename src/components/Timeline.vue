@@ -131,7 +131,7 @@
 }
 
 .lanes {
-    @apply relative flex overflow-x-scroll;
+    @apply relative flex overflow-x-scroll overflow-y-hidden;
 }
 
 .add-lane {

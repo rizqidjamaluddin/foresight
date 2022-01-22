@@ -46,7 +46,7 @@ x
         [Event.STACK_OR_SPREAD, EventTypes.DMG, 'Stack / spread', ['#50E3C2', '#F5A623'], ['&#x292B;', '&#9678;']],
         [Event.DEBUFFS, EventTypes.MECH, 'Debuffs', '#50E3C2'],
         [Event.POSITIONS, EventTypes.MECH, 'Positions', '#1B3759'],
-        [Event.RESOLUTIONS, EventTypes.DMG, 'Resolve mechs', '#1B3759', '&#9758;'],
+        [Event.RESOLUTIONS, EventTypes.DMG, 'Resolve mechs', '#1B3759', '⚠️'],
     ]
 
     @Component({})

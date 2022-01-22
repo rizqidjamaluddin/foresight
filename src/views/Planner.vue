@@ -13,9 +13,11 @@
                     :time="marker.offset"
                     :ability="getAbility(lane.cls, lane.ability)"
                     :multiplier="multiplier"
-                    :lock="plan.config.lock"
+                    :global-lock="plan.config.lock"
+                    :lock="marker.locked"
                     @delete="deleteMarker(marker.id)"
                     @changeTime="moveMarker(marker.id, $event)"
+                    @lock="lockMarker(marker.id)"
                 />
             </ability-lane>
         </Timeline>
@@ -78,7 +80,8 @@
         markers: Array<{
             id: number,
             lane: number,
-            offset: number
+            offset: number,
+            locked: boolean,
         }>,
     }
 
@@ -157,7 +160,8 @@
             this.plan.markers.push({
                 id: this.plan.inc.marker,
                 lane: laneId,
-                offset: Math.floor(targetTime)
+                offset: Math.floor(targetTime),
+                locked: false,
             })
             this.plan.inc.marker++
         }
@@ -174,6 +178,17 @@
             const marker = this.plan.markers.find(({id}) => id === markerId)
             if (marker) {
                 marker.offset = Math.round(time)
+            } else {
+                console.warn('missing marker')
+            }
+        }
+
+        lockMarker(markerId: number) {
+
+            const marker = this.plan.markers.find(({id}) => id === markerId)
+            if (marker) {
+                // need to use $set here instead of assignment because this value may be undefined in old versions.
+                this.$set(marker, 'locked', !marker.locked)
             } else {
                 console.warn('missing marker')
             }

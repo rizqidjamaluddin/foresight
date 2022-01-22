@@ -2,11 +2,14 @@
     <div class="marker"
          :style="styles"
          @mousedown.prevent="handleDown"
+         @dblclick.prevent="handleDoubleClick"
+         :title="time"
     >
         <div class="marker-bg" :style="bgStyles"></div>
         <div class="marker-body" :style="bodyStyles">
         </div>
         <img :src="normalizeAsset(ability.icon)" class="marker-icon" />
+        <div class="marker-lock" v-if="lock">&#128274;</div>
     </div>
 </template>
 
@@ -20,6 +23,7 @@
         @Prop() time!: number
         @Prop() multiplier!: number
         @Prop() lock!: boolean
+        @Prop() globalLock!: boolean
 
         @Prop() ability!: Ability
 
@@ -35,7 +39,7 @@
 
 
         handleDown(event: MouseEvent) {
-            if (this.lock) return
+            if (this.lock || this.globalLock) return
 
             this.dragging = true
             this.dragStart = event.pageY
@@ -67,6 +71,10 @@
             this.willDelete = Math.abs(this.dragHorizontalStart - event.pageX) > 60
         }
 
+        handleDoubleClick(event: MouseEvent) {
+            this.$emit('lock')
+        }
+
         get styles() {
             return {
                 top: `${this.time * this.multiplier}px`,
@@ -78,7 +86,9 @@
 
         get bgStyles() {
             return {
-                background: this.ability.color
+                background: this.ability.color,
+                boxShadow: !this.lock ? '' : `0 0 0 2px white, 0 0 0 4px ${this.ability.color}`,
+                opacity:  0.25,
             }
         }
 
@@ -101,7 +111,7 @@
 }
 .marker-bg {
     @apply absolute inset-0;
-    opacity: 0.2;
+    /*opacity: 0.2;*/
 }
 
 .marker-body {
@@ -114,5 +124,13 @@
     left: 18px;
     width: 24px;
     height: 24px;
+}
+
+.marker-lock {
+    @apply absolute;
+    top: -12px;
+    font-size: 16px;
+    left: -8px;
+    pointer-events: none;
 }
 </style>

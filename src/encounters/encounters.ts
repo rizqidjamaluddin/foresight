@@ -35,7 +35,7 @@ export type Encounter = {
         type: Event,
         alias?: string,
         magical?: true,
-        actor?: true,
+        actor?: true,           // TODO: show these in the timeline
         special?: true,
     }>
 }
@@ -336,7 +336,8 @@ export const p3s: Encounter = {
         },
         "Storms of Asphodelos": {
             type: Event.RESOLUTIONS,
-            alias: 'Storms'
+            alias: 'Storms',
+            special: true,
         },
         "Puddles": {
             type: Event.PUDDLES
