@@ -10,7 +10,7 @@
                     :magical="getMagical(event.event)"
                     :generic="generic"
                 >
-                    {{ event.event }}
+                    {{ getDisplayName(event.event) }}
                 </event-marker>
             </div>
             <div :style="barStyles" class="bar"></div>
@@ -24,7 +24,7 @@
                     :magical="getMagical(event.event)"
                     :generic="generic"
                 >
-                    {{ event.event }}
+                    {{ getDisplayName(event.event) }}
                 </event-marker>
             </div>
         </div>
@@ -76,6 +76,14 @@
             }
         }
 
+        getDisplayName(eventName: string) {
+            if (Object.keys(this.encounter.lookup).includes(eventName) && this.encounter.lookup[eventName].alias) {
+                return this.encounter.lookup[eventName].alias
+            } else {
+                return eventName
+            }
+        }
+
         get rightSide() {
             return this.encounter.timeline.filter(({event}) => this.isSpecial(event))
         }
@@ -99,7 +107,6 @@
 .timeline {
     @apply flex;
     max-width: 100vw;
-    overflow-x: hidden;
 }
 
 .events {
@@ -124,7 +131,7 @@
 }
 
 .lanes {
-    @apply relative flex;
+    @apply relative flex overflow-x-scroll;
 }
 
 .add-lane {

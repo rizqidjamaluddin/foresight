@@ -6,7 +6,7 @@
         <div class="marker-bg" :style="bgStyles"></div>
         <div class="marker-body" :style="bodyStyles">
         </div>
-        <img :src="ability.icon" class="marker-icon" />
+        <img :src="normalizeAsset(ability.icon)" class="marker-icon" />
     </div>
 </template>
 
@@ -28,6 +28,10 @@
         dragDelta = 0
         dragHorizontalStart = 0
         willDelete = false
+
+        normalizeAsset(path: string) {
+            return process.env.BASE_URL +  path
+        }
 
 
         handleDown(event: MouseEvent) {

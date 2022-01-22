@@ -4,6 +4,7 @@ export enum Event {
     GENERIC,
     ENRAGE,
     TANK_BUSTER,
+    TANK_TETHERS,
     RAID_WIDE,
     RAID_WIDE_TICK,
     SAFE_SPOT,
@@ -17,17 +18,22 @@ export enum Event {
     FLARE,
     STACK,
     FLARE_OR_STACK,
+    STACK_OR_SPREAD,
+    DEBUFFS,
     POSITIONS,
+    RESOLUTIONS,
 }
 
 export enum DamageType {
     MAGICAL,
     PHYSICAL
 }
+
 export type Encounter = {
-    timeline: Array<{timestamp: number, event: string}>,
+    timeline: Array<{ timestamp: number, event: string }>,
     lookup: Record<string, {
         type: Event,
+        alias?: string,
         magical?: true,
         actor?: true,
         special?: true,
@@ -35,7 +41,7 @@ export type Encounter = {
 }
 
 function convertTimeline(input: Record<string, string>) {
-    return Object.entries(input).reduce<Array<{timestamp: number, event: string}>>((prev, [key, value]) => {
+    return Object.entries(input).reduce<Array<{ timestamp: number, event: string }>>((prev, [key, value]) => {
         prev.push({
             timestamp: timeToSec(key),
             event: value
@@ -175,25 +181,201 @@ export const p2s: Encounter = {
         "9:59": "Murky Depths",
         "10:11": "Murky Depths",
     }),
-    "lookup": {
-    }
+    "lookup": {}
 }
 
 export const p3s: Encounter = {
     "timeline": convertTimeline({
+        "0:09": "Scorched Exaltation",
+        "0:16": "Heat of Condemnation",
+        "0:29": "Experimental Fireplume",
+        "0:39": "Right/Left Cinderwing",
+        "0:52": "Darkened Fire",
+        // "1:03": "Brightened Fire #1",
+        // "1:09": "Brightened Fire #2",
+        // "1:10": "Brightened Fire #3",
+        // "1:12": "Brightened Fire #4",
+        // "1:14": "Brightened Fire #5",
+        // "1:15": "Brightened Fire #6",
+        // "1:17": "Brightened Fire #7",
+        // "1:18": "Brightened Fire #8",
+        "1:30": "Heat of Condemnation",
+        "1:39": "Scorched Exaltation",
+        "1:51": "Devouring Brand",
+        "1:57": "Experimental Fireplume",
+        "2:09": "Searing Breeze",
+        "2:15": "Right/Left Cinderwing",
+        "2:23": "Heat of Condemnation",
+        "2:32": "Experimental Fireplume",
+        "2:41": "Trail of Condemnation",
+
+        // ADDS
+        "2:55": "Adds spawn",
+        "3:09": "Blazing Rain",
+        "3:17": "Blazing Rain",
+        "3:21": "Flames of Undeath",
+        "3:22": "Blazing Rain",
+        "3:30": "Fireglide Sweep",
+        "3:34": "Blazing Rain",
+        "3:40": "Blazing Rain",
+        "3:44": "Fireglide Sweep",
+        "3:50": "Blazing Rain",
+        "3:58": "Blazing Rain",
+        "4:06": "Blazing Rain",
+        "4:11": "Blazing Rain",
+        "4:12": "Flames of Undeath",
+        // "???": "Adds Enrage",
+        // "4:12": "Boss targetable",
+        "4:28": "Dead Rebirth",
+        "4:47": "Heat of Condemnation",
+        "5:02": "Fledling Flight",
+        // "5:11": "Markers disappear",
+        "5:26": "Experimental Gloryplume",
+        // "5:37": "Plume #1",
+        // "5:38": "Plume #2",
+        // "5:39": "Plume #3",
+        // "5:40": "Plume #4",
+        // "5:41": "Plume #5 (mid)",
+        "5:44": "Gloryplume",
+
+        // FOUNTAINS
+        "5:56": "Fountain of Fire",
+        "6:05": "Sun's Pinion",
+        // "6:14": "Fountain of Death",
+        "6:22": "Fireglide",
+        "6:29": "Scorched Exaltation",
+        "6:37": "Scorched Exaltation",
+        "6:47": "Heat of Condemnation",
+
+        // FIRESTORMS
+        "7:02": "Firestorms of Asphodelos",
+        "7:10": "Flames of Asphodelos",
+        "7:19": "Blazing Rain",
+        // "7:19": "Flame #1",
+        // "7:20": "Flame #2",
+        // "7:21": "Flame #3",
+        "7:24": "Blazing Rain",
+        "7:25": "Ashplume",
+        "7:28": "Flames of Asphodelos",
+        // "7:37": "Flame #1",
+        // "7:38": "Flame #2",
+        // "7:39": "Flame #3",
+        "7:41": "Storms of Asphodelos",
+        // "7:49": "Beacons of Asphodelos", ???
+        "7:52": "Darkblaze Twister",
+        "8:02": "Puddles",
+        "8:04": "Puddles",
+        "8:05": "Blazing Rain",
+        "8:06": "Puddles",
+        // "8:06": "Experimental Ashplumes",
+        "8:07": "Puddles",
+        "8:11": "Blazing Rain",
+        "8:12": "Twister knockback",
+        "8:19": "Ashplume",
+        "8:21": "Scorched Exaltation",
+        "8:33": "Death's Toll",
+        "8:42": "Fledling Flight",
+        "8:48": "Life's Agonies",
+        // "8:58": "Ashen Eye",
+        "9:19": "Experimental Gloryplume",
+        "9:31": "Gloryplume",
+        "9:34": "Trail of Condemnation",
+        "9:53": "Devouring Brand",
+        "10:11": "Searing Breeze",
+        "10:17": "Right/Left Cinderwing",
+        "10:27": "Scorched Exaltation",
+        "10:35": "Scorched Exaltation",
+        "10:41": "Final Exaltation",
+    }),
+    "lookup": {
+        "Scorched Exaltation": {
+            type: Event.RAID_WIDE,
+            special: true,
+        },
+        "Heat of Condemnation": {
+            type: Event.TANK_TETHERS,
+            special: true,
+        },
+        "Experimental Fireplume": {
+            type: Event.SAFE_SPOT,
+            alias: 'Fireplume'
+        },
+        "Blazing Rain": {
+            type: Event.RAID_WIDE_TICK,
+            magical: true
+        },
+        "Right/Left Cinderwing": {
+            type: Event.SAFE_SIDE,
+            alias: 'Cinderwing'
+        },
+        "Searing Breeze": {
+            type: Event.PUDDLES,
+        },
+        'Flames of Undeath': {
+            type: Event.RAID_WIDE,
+        },
+        'Dead Rebirth': {
+            type: Event.RAID_WIDE,
+        },
+        "Experimental Gloryplume": {
+            type: Event.SAFE_SPOT,
+        },
+        "Gloryplume": {
+            type: Event.STACK_OR_SPREAD,
+        },
+        "Firestorms of Asphodelos": {
+            type: Event.GENERIC,
+            alias: 'Firestorms'
+        },
+        "Ashplume": {
+            type: Event.STACK_OR_SPREAD
+        },
+        "Flames of Asphodelos": {
+            type: Event.SAFE_SLICE,
+            alias: 'Flames'
+        },
+        "Storms of Asphodelos": {
+            type: Event.RESOLUTIONS,
+            alias: 'Storms'
+        },
+        "Puddles": {
+            type: Event.PUDDLES
+        },
+        "Twister knockback": {
+            type: Event.KNOCKBACK,
+        },
+        "Death's Toll": {
+            type: Event.DEBUFFS,
+        },
+        "Life's Agonies": {
+            type: Event.RAID_WIDE,
+            special: true,
+        },
+        "Trail of Condemnation": {
+            type: Event.STACK_OR_SPREAD,
+            alias: 'Divebomb'
+        }
+    }
+}
+
+
+/**
+ * old version
+ *
+ *     "timeline": convertTimeline({
         "0:08": "Scorched Exaltation",
         "0:16": "Heat of Condemnation",
         "0:28": "Experimental Fireplume",
         "0:38": "Right/Left Cinderwing",
         "0:52": "Darkened Fire",
-        "1:03": "Brightened Fire #1",
-        "1:09": "Brightened Fire #2",
-        "1:10": "Brightened Fire #3",
-        "1:12": "Brightened Fire #4",
-        "1:14": "Brightened Fire #5",
-        "1:15": "Brightened Fire #6",
-        "1:17": "Brightened Fire #7",
-        "1:18": "Brightened Fire #8",
+        // "1:03": "Brightened Fire #1",
+        // "1:09": "Brightened Fire #2",
+        // "1:10": "Brightened Fire #3",
+        // "1:12": "Brightened Fire #4",
+        // "1:14": "Brightened Fire #5",
+        // "1:15": "Brightened Fire #6",
+        // "1:17": "Brightened Fire #7",
+        // "1:18": "Brightened Fire #8",
         "1:30": "Heat of Condemnation",
         "1:40": "Scorched Exaltation",
         "1:51": "Devouring Brand",
@@ -202,7 +384,7 @@ export const p3s: Encounter = {
         "2:14": "Right/Left Cinderwing",
         "2:23": "Heat of Condemnation",
         "2:32": "Experimental Fireplume",
-        // "2:42": "Boss untargetable",
+        "2:41": "Trail of Condemnation",
         "2:55": "Adds spawn",
         "3:09": "Blazing Rain",
         "3:17": "Blazing Rain",
@@ -222,17 +404,17 @@ export const p3s: Encounter = {
         "4:26": "Dead Rebirth",
         "4:45": "Heat of Condemnation",
         "4:59": "Fledling Flight",
-        "5:11": "Markers disappear",
+        // "5:11": "Markers disappear",
         "5:24": "Experimental Gloryplume",
-        "5:37": "Plume #1",
-        "5:38": "Plume #2",
-        "5:39": "Plume #3",
-        "5:40": "Plume #4",
-        "5:41": "Plume #5 (mid)",
+        // "5:37": "Plume #1",
+        // "5:38": "Plume #2",
+        // "5:39": "Plume #3",
+        // "5:40": "Plume #4",
+        // "5:41": "Plume #5 (mid)",
         "5:43": "Gloryplume",
         "5:54": "Fountain of Fire",
         "6:03": "Sun's Pinion",
-        "6:14": "Fountain of Death",
+        // "6:14": "Fountain of Death",
         "6:21": "Fireglide",
         "6:26": "Scorched Exaltation",
         "6:33": "Scorched Exaltation",
@@ -240,35 +422,35 @@ export const p3s: Encounter = {
         "7:00": "Firestorms of Asphodelos",
         "7:08": "Flames of Asphodelos",
         "7:17": "Blazing Rain",
-        "7:19": "Flame #1",
-        "7:20": "Flame #2",
-        "7:21": "Flame #3",
+        // "7:19": "Flame #1",
+        // "7:20": "Flame #2",
+        // "7:21": "Flame #3",
         "7:22": "Blazing Rain",
         "7:23": "Ashplume",
         "7:26": "Flames of Asphodelos",
-        "7:37": "Flame #1",
-        "7:38": "Flame #2",
-        "7:39": "Flame #3",
+        // "7:37": "Flame #1",
+        // "7:38": "Flame #2",
+        // "7:39": "Flame #3",
         "7:40": "Storms of Asphodelos",
         // "7:49": "Beacons of Asphodelos", ???
         "7:49": "Darkblaze Twister",
-        "8:00": "baited puddles #1",
-        "8:02": "baited puddles #2",
+        "8:00": "Puddles",
+        "8:02": "Puddles",
         "8:03": "Blazing Rain",
-        "8:05": "baited puddles #3",
-        "8:06": "Experimental Ashplumes",
-        "8:07": "baited puddles #4",
+        "8:05": "Puddles",
+        // "8:06": "Experimental Ashplumes",
+        "8:07": "Puddles",
         "8:11": "Blazing Rain",
-        "8:12": "Twister knockback",
+        // "8:12": "Twister knockback",
         "8:17": "Ashplume",
         "8:18": "Scorched Exaltation",
         "8:31": "Death's Toll",
         "8:40": "Fledling Flight",
         "8:45": "Life's Agonies",
-        "8:58": "Ashen Eye",
+        // "8:58": "Ashen Eye",
         "9:17": "Experimental Gloryplume",
         "9:29": "Gloryplume",
-        "9:50": "Sparks of Condemnation",
+        "9:50": "Trail of Condemnation",
         "9:51": "Devouring Brand",
         "10:08": "Searing Breeze",
         "10:15": "Right/Left Cinderwing",
@@ -276,10 +458,4 @@ export const p3s: Encounter = {
         "10:33": "Scorched Exaltation",
         "10:41": "Final Exaltation",
     }),
-    "lookup": {
-        "Blazing Rain": {
-            type: Event.RAID_WIDE_TICK,
-            magical: true
-        }
-    }
-}
+ */

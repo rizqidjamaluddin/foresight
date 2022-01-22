@@ -1,7 +1,7 @@
 <template>
     <div class="lane">
         <div class="lane-header">
-            <img :src="icon" />
+            <img :src="normalizeAsset(icon)" />
         </div>
         <div class="lane-contents">
             <div class="lane-bg" @click.prevent="addNewElement"></div>
@@ -18,6 +18,10 @@
     export default class AbilityLane extends Vue {
         @Prop() icon!: string
 
+        normalizeAsset(path: string) {
+            return process.env.BASE_URL +  path
+        }
+
         addNewElement(event: MouseEvent) {
             this.$emit('addMarker', event.offsetY)
         }
@@ -27,7 +31,7 @@
 .lane {
     @apply relative inset-y-0 grid;
     /*background: rgba(0,50,255,0.1);*/
-    width: 100px;
+    min-width: 100px;
     grid-template-rows: 60px 1fr;
 }
 

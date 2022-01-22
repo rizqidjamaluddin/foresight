@@ -1,6 +1,6 @@
 <template>
     <div class="marker" :style="styles" :class="{'mini-marker': isMini}">
-        <div class="gridline"></div>
+        <div class="gridline" :class="{'gridline-right': special}"></div>
         <div class="label" :class="{'label-right': special}" :style="labelStyles" v-if="!isMini">
             <span class="symbol" v-html="symbols[0]"></span>
             <template v-if="generic && genericName">
@@ -29,20 +29,24 @@ x
     const lookup: Array<[Event, EventTypes, string, string | [string, string], (string | [string, string])?]> = [
         [Event.ENRAGE, EventTypes.DMG, 'Enrage', '#000000'],
         [Event.TANK_BUSTER, EventTypes.DMG, 'Tank buster', '#F5A623', '&bigtriangledown;'],
+        [Event.TANK_TETHERS, EventTypes.DMG, 'Tank tether', '#ff6600', '&#8671;'],
         [Event.RAID_WIDE, EventTypes.DMG, 'Raid-wide', '#D0021B'],
         [Event.RAID_WIDE_TICK, EventTypes.DMG, 'Raid-wide', '#D0021B'],
         [Event.SAFE_SPOT, EventTypes.MECH, 'Safe spot', '#7ED321'],
-        [Event.SAFE_SIDE, EventTypes.MECH, 'Safe side', '#7ED321'],
+        [Event.SAFE_SIDE, EventTypes.MECH, 'Safe side', '#7ED321', '&#9680;'],
         [Event.SAFE_SLICE, EventTypes.MECH, 'Safe slice', '#7ED321', '&Otimes;'],
         [Event.GET_OUT, EventTypes.MECH, 'Get out', '#7ED321', ['&LessLess;', '&GreaterGreater;']],
         [Event.GET_IN, EventTypes.MECH, 'Get in', '#7ED321', ['&GreaterGreater;', '&LessLess;']],
-        [Event.KNOCKBACK, EventTypes.MECH, 'Knockback', '#7ED321'],
-        [Event.PUDDLES, EventTypes.MECH, 'Puddles', '#F8E71C'],
+        [Event.KNOCKBACK, EventTypes.MECH, 'Knockback', '#7ED321', ['&lsaquo;','&rsaquo;']],
+        [Event.PUDDLES, EventTypes.MECH, 'Puddles', '#F8E71C', '&#9676;'],
         [Event.BAIT, EventTypes.MECH, 'Bait', '#F8E71C'],
         [Event.FLARE, EventTypes.DMG, 'Flare', '#50E3C2', '&#x27E1;'],
         [Event.STACK, EventTypes.DMG, 'Stack', '#F5A623', '&#x292B;'],
         [Event.FLARE_OR_STACK, EventTypes.DMG, 'Flare / stack', ['#50E3C2', '#F5A623'], ['&#x27E1;', '&#x292B;']],
+        [Event.STACK_OR_SPREAD, EventTypes.DMG, 'Stack / spread', ['#50E3C2', '#F5A623'], ['&#x292B;', '&#9678;']],
+        [Event.DEBUFFS, EventTypes.MECH, 'Debuffs', '#50E3C2'],
         [Event.POSITIONS, EventTypes.MECH, 'Positions', '#1B3759'],
+        [Event.RESOLUTIONS, EventTypes.DMG, 'Resolve mechs', '#1B3759', '&#9758;'],
     ]
 
     @Component({})
@@ -147,12 +151,18 @@ x
 }
 
 .mini-marker::before {
+    opacity: 0.25;
     height: 2px;
 }
 
 .gridline {
-    @apply w-screen h-px;
+    @apply h-px;
+    width: calc(100vw - 24px);
     background: rgba(0, 0, 0, 0.1);
+}
+
+.gridline-right {
+    width: calc(100vw - 229px);
 }
 
 .mini-label {
@@ -160,6 +170,7 @@ x
     background: var(--bg);
     height: 1px;
     text-indent: -999px;
+    opacity: 0.25;
 }
 
 .label {
