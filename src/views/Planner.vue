@@ -52,6 +52,10 @@
     import AbilityMarker from "@/components/AbilityMarker.vue"
     import {CombatClass, warrior} from "@/classes/tanks"
 
+    import {bytesToBase64, base64ToBytes} from 'byte-base64'
+    import msgpack from 'msgpack-lite'
+    import pako from 'pako'
+
 
     const encounters: Record<string, Encounter> = {
         'p1s': p1s,
@@ -247,11 +251,20 @@
 
         @Watch('$route', {deep: true, immediate: true})
         watchForUrlChange() {
-            if (this.$route.query['s'] && this.$route.query['s'] !== this.lastState) {
-                console.log('updating')
+
+            // back compat for a bit
+            if (this.$route.query['s'] ) {
                 this.lastState = this.$route.query['s'] as string
+                this.plan = JSON.parse(atob(this.$route.query['s'] as string))
+                return
+            }
+
+            if (this.$route.query['p'] && this.$route.query['p'] !== this.lastState) {
+                this.lastState = this.$route.query['p'] as string
                 try {
-                    this.plan = JSON.parse(atob(this.$route.query['s'] as string))
+                    const deflate = base64ToBytes(this.lastState)
+                    const bin = pako.inflateRaw(deflate)
+                    this.plan = msgpack.decode(bin)
                 } catch (e) {
                 }
             }
@@ -259,10 +272,16 @@
 
         @Watch('plan', {immediate: true, deep: true})
         saveChanges() {
-            const newState = btoa(JSON.stringify(this.plan))
+
+            // Steal ak's smolifier
+            // https://github.com/ackwell/potato-rotato/blob/main/src/state.ts
+            const bin = msgpack.encode(this.plan)
+            const deflate = pako.deflateRaw(bin)
+            const newState = bytesToBase64(deflate)
+
             if (newState !== this.lastState) {
                 this.lastState = newState
-                this.$router.replace({query: {s: newState}})
+                this.$router.replace({query: {p: newState}})
             }
         }
     }
